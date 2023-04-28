@@ -8,6 +8,10 @@ info:
 tags:
   - name: song
     description: All information about the songs
+  - name: album
+    description: All infromation about the albums
+  - name: playlist
+    description: All information about different playlists
 paths:
   /songs/:
     post:
@@ -15,7 +19,7 @@ paths:
         - song
       summary: Add a new song to the database
       description: Add a new song to the database
-      operationId: addPet
+      operationId: addSong
       requestBody:
         description: Add a new song to the database
         content:
@@ -34,7 +38,6 @@ paths:
             
         '405':
           description: Invalid input
-    
   /songs/{songId}:
     get:
       tags:
@@ -63,8 +66,7 @@ paths:
         '400':
           description: Invalid ID supplied
         '404':
-          description: Pet not found
-    
+          description: Song not found
     delete:
       tags:
         - song
@@ -84,7 +86,6 @@ paths:
           description: Invalid songId supplied
         '404':
           description: Song not found
-      
     put:
       tags:
         - song
@@ -104,16 +105,228 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Song'
-  
       responses:
         default:
-          description: successful operation  
+          description: successful operation
+  /albums/:
+    post:
+      tags:
+        - album
+      summary: Add a new album to the database
+      description: Add a new album to the database
+      operationId: addAlbum
+      requestBody:
+        description: Add a new album to the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Album'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Album'
+        '405':
+          description: Invalid input
+  /albums/{albumId}:
+    get:
+      tags:
+        - album
+      summary: Find album by albumID
+      description: Returns a single album
+      operationId: getAlbumById
+      parameters:
+        - name: albumId
+          in: path
+          description: ID of album to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Album'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Album not found
+    delete:
+      tags:
+        - album
+      summary: Delete album by unique ID
+      description: Delete a album from the database with a valid albumId
+      operationId: deleteAlbum
+      parameters:
+        - name: albumId
+          in: path
+          description: ID of the album that needs to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid albumId supplied
+        '404':
+          description: Album not found
+    put:
+      tags:
+        - album
+      summary: Update existing album
+      description: Updates an album that already exists in database. Will get error if album does not exist
+      operationId: updateAlbum
+      parameters:
+        - name: albumId
+          in: path
+          description: name that need to be updated
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent album in the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Album'
+      responses:
+        default:
+          description: successful operation
+  /albums/{albumId}/shuffle:
+    put:
+      tags:
+        - album
+      summary: Shuffle existing album
+      description: Shuffles an album that already exists in database. Will get error if album does not exist
+      operationId: shuffleAlbum
+      parameters:
+        - name: albumId
+          in: path
+          description: album that need to be shuffled
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: successful operation
+  /playlists/:
+    post:
+      tags:
+        - playlist
+      summary: Add a new playlist to the database
+      description: Add a new playlist to the database
+      operationId: addPlaylist
+      requestBody:
+        description: Add a new playlist to the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Playlist'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Playlist'
+        '405':
+          description: Invalid input
+  /playlists/{playlistId}:
+    get:
+      tags:
+        - playlist
+      summary: Find playlist by playlistID
+      description: Returns a single playlist
+      operationId: getPlaylistById
+      parameters:
+        - name: playlistId
+          in: path
+          description: ID of playlist to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Playlist'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Playlist not found
+    delete:
+      tags:
+        - playlist
+      summary: Delete playlist by unique ID
+      description: Delete a playlist from the database with a valid playlistId
+      operationId: deletePlaylist
+      parameters:
+        - name: playlistId
+          in: path
+          description: ID of the playlist that needs to be deleted
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid playlistId supplied
+        '404':
+          description: Playlist not found
+    put:
+      tags:
+        - playlist
+      summary: Update existing playlist
+      description: Updates a playlist that already exists in database. Will get error if album does not exist
+      operationId: updatePlaylist
+      parameters:
+        - name: playlistId
+          in: path
+          description: name that need to be deleted
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Update an existent song in the database
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Playlist'
+      responses:
+        default:
+          description: successful operation
+  /playlist/{playlistId}/shuffle:
+    put:
+      tags:
+        - playlist
+      summary: Shuffle existing playlist
+      description: Shuffles an playlist that already exists in database. Will get error if playlist does not exist
+      operationId: shufflePlaylist
+      parameters:
+        - name: playlistId
+          in: path
+          description: playlist that need to be shuffled
+          required: true
+          schema:
+            type: string
+      responses:
+        default:
+          description: successful operation
 components:
   schemas:
     Song:
       required:
         - name
-        - photoUrls
       type: object
       properties:
         id:
@@ -130,5 +343,50 @@ components:
           type: integer
           format: int64
           example: 360
-  
-  
+    Album:
+      required:
+        - name
+        - photoUrls
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        date:
+          type: string
+          format: date
+          example: "2017-07-21"
+        name:
+          type: string
+          example: Yesterday
+        genre:
+          type: string
+          example: noname
+        songs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Song'
+    Playlist:
+      required:
+        - name
+        - photoUrls
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Yesterday
+        trackNums:
+          type: integer
+          format: int64
+          example: 10
+        songs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Song'
+    
+        
