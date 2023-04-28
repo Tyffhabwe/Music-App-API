@@ -23,30 +23,55 @@ namespace Music_Web_API.Controllers
             return Ok();
         }
 
-        [HttpGet("/songs/{songId}")]
-        public ActionResult getASpecificSong(long id) 
+        [HttpGet("/songs")]
+        public ActionResult getAllTheSongs() 
         {
-            var songWeFound = _musicContext.Songs.Where(s => s.songId == id).ToList();
+            var songs = _musicContext.Songs;
 
-            Console.WriteLine(songWeFound);
+            return Ok(songs);
+        }
 
-            return Ok(songWeFound);
+        [HttpGet("/songs/{songId}")]
+        public ActionResult getASpecificSong(int songId) 
+        {
+            var songWefound = _musicContext.Songs.FirstOrDefault(s => s.songId == songId);
+
+            if(songWefound == null)
+            {
+                return NotFound();
+            }
+            return Ok(songWefound);
         }
 
         [HttpDelete("/songs/{songId}")]
-        public ActionResult deleteASpecficiSong(long id) 
+        public ActionResult deleteASpecificSong(int songId) 
         {
-            var songToDelete = _musicContext.Songs.Where(s => s.songId == id);
+            var songToDelete = _musicContext.Songs.FirstOrDefault(s => s.songId == songId);
 
+            if (songToDelete == null)
+            {
+                return NotFound();
+            }
+            _musicContext.Songs.Remove(songToDelete);
+            _musicContext.SaveChanges();
             return Ok(songToDelete);
         }
 
         [HttpPut("/songs/{songId}")]
-        public ActionResult updateSpecifcSong(long id, [FromBody] Song songUpdateDetails) 
+        public ActionResult updateSpecificSong(int songId, [FromBody] Song songUpdateDetails) 
         {
-            var songToUpdate = _musicContext.Songs.Where(s => s.songId == id);
+            var songToUpdate = _musicContext.Songs.FirstOrDefault(s => s.songId == songId);
 
-            return Ok(songUpdateDetails);
+            if (songToUpdate == null)
+            {
+                return NotFound();
+            }
+            songToUpdate.artist = songUpdateDetails.artist;
+            songToUpdate.name = songUpdateDetails.name;
+            songToUpdate.length = songUpdateDetails.length;
+
+            _musicContext.SaveChanges();
+            return Ok(songToUpdate);
         }
     }
 }
